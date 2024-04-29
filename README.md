@@ -59,6 +59,7 @@ This repo periodically syncs all official Kubeflow components from their respect
 | KServe Models Web App | contrib/kserve/models-web-app | [v0.10.0](https://github.com/kserve/models-web-app/tree/v0.10.0/config) |
 | Kubeflow Pipelines | apps/pipeline/upstream | [2.0.5](https://github.com/kubeflow/pipelines/tree/2.0.5/manifests/kustomize) |
 | Kubeflow Tekton Pipelines | apps/kfp-tekton/upstream | [2.0.5](https://github.com/kubeflow/kfp-tekton/tree/2.0.5/manifests/kustomize) |
+| Kubeflow Model Registry | apps/model-registry/upstream | [main](https://github.com/kubeflow/model-registry/tree/main/manifests/kustomize) |
 
 The following is also a matrix with versions from common components that are
 used from the different projects of Kubeflow:
@@ -85,9 +86,9 @@ The `example` directory contains an example kustomization for the single command
 
 ### Prerequisites
 
-- `Kubernetes` (up to `1.27`) with a default [StorageClass](https://kubernetes.io/docs/concepts/storage/storage-classes/)
-- `kustomize` [5.0.3](https://github.com/kubernetes-sigs/kustomize/releases/tag/kustomize%2Fv5.0.3)
-    - :warning: Kubeflow is not compatible with earlier versions of Kustomize. This is because we need the [`sortOptions`](https://kubectl.docs.kubernetes.io/references/kustomize/kustomization/sortoptions/) field, which is only available in Kustomize 5 and onwards https://github.com/kubeflow/manifests/issues/2388.
+- `Kubernetes` (around `1.28`) with a default [StorageClass](https://kubernetes.io/docs/concepts/storage/storage-classes/)
+- `kustomize` [5.2.1+](https://github.com/kubernetes-sigs/kustomize/releases/tag/kustomize%2Fv5.2.1)
+    - :warning: Kubeflow is not compatible with earlier versions of Kustomize. One of the reasons is that we need the [`sortOptions`](https://kubectl.docs.kubernetes.io/references/kustomize/kustomization/sortoptions/) field, which is only available in Kustomize 5 and onwards https://github.com/kubeflow/manifests/issues/2388.
 - `kubectl`
 
 ---
@@ -100,6 +101,8 @@ The `example` directory contains an example kustomization for the single command
 ### Install with a single command
 
 #### Prerequisites
+- 32 GB of RAM recommended
+- 16 CPU cores recommended
 - `kind`
 - `docker`
 - Linux kernel subsystem changes
@@ -113,6 +116,7 @@ kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
 nodes:
 - role: control-plane
+  image: kindest/node:v1.28.0
   kubeadmConfigPatches:
   - |
     kind: ClusterConfiguration
@@ -134,7 +138,7 @@ kind get kubeconfig --name kubeflow > ~/.kube/config
 docker login
 
 kubectl create secret generic regcred \
-    --from-file=.dockerconfigjson=/path/to/.docker/config.json \
+    --from-file=.dockerconfigjson=/home/to/.docker/config.json \
     --type=kubernetes.io/dockerconfigjson
 ```
 
@@ -431,7 +435,7 @@ kustomize build apps/training-operator/upstream/overlays/kubeflow | kubectl appl
 
 #### User Namespace
 
-Finally, create a new namespace for the the default user (named `kubeflow-user-example-com`).
+Finally, create a new namespace for the default user (named `kubeflow-user-example-com`).
 
 ```sh
 kustomize build common/user-namespace/base | kubectl apply -f -
@@ -508,4 +512,4 @@ The Manifest Working Group releases Kubeflow based on the [release timeline](htt
 - **Q:** What versions of Istio, Knative, Cert-Manager, Argo, ... are compatible with Kubeflow? \
   **A:** Please refer to each individual component's documentation for a dependency compatibility range. For Istio, Knative, Dex, Cert-Manager and OIDC-AuthService, the versions in `common` are the ones we have validated.
 - **Q:** Can I use earlier version of Kustomize with Kubeflow manifests?
-  **A:** The manual installation instructions work with Kustomize 3.2. To use the one-liner installation you'll need to comment out the `sortOptions` section in the `example/kustomization.yaml`.
+  **A:** No, it is not supported anymore, although it might be possible with manual effort.
