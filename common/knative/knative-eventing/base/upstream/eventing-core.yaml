@@ -592,6 +592,9 @@ spec:
           terminationMessagePolicy: FallbackToLogsOnError
           image: gcr.io/knative-releases/knative.dev/eventing/cmd/controller@sha256:92967bab4ad8f7d55ce3a77ba8868f3f2ce173c010958c28b9a690964ad6ee9b
           resources:
+            limits:
+              cpu: 1000m
+              memory: 1000Mi
             requests:
               cpu: 100m
               memory: 100Mi

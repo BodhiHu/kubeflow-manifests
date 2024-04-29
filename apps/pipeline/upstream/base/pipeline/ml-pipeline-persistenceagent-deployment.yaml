@@ -33,6 +33,9 @@ spec:
         imagePullPolicy: IfNotPresent
         name: ml-pipeline-persistenceagent
         resources:
+          limits:
+            cpu: 1200m
+            memory: 5000Mi
           requests:
             cpu: 120m
             memory: 500Mi

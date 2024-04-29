@@ -39,6 +39,9 @@ spec:
           name: data
           subPath: minio
         resources:
+          limits:
+            cpu: 200m
+            memory: 1000Mi
           requests:
             cpu: 20m
             memory: 100Mi

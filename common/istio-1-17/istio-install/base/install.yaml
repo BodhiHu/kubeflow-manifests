@@ -1707,9 +1707,13 @@ data:
               requests:
                 {{ if (isset .ObjectMeta.Annotations `sidecar.istio.io/proxyCPU`) -}}
                 cpu: "{{ index .ObjectMeta.Annotations `sidecar.istio.io/proxyCPU` }}"
+                {{- else }}
+                cpu: 60m
                 {{ end }}
                 {{ if (isset .ObjectMeta.Annotations `sidecar.istio.io/proxyMemory`) -}}
                 memory: "{{ index .ObjectMeta.Annotations `sidecar.istio.io/proxyMemory` }}"
+                {{- else }}
+                memory: 60Mi
                 {{ end }}
             {{- end }}
             {{- if or (isset .ObjectMeta.Annotations `sidecar.istio.io/proxyCPULimit`) (isset .ObjectMeta.Annotations `sidecar.istio.io/proxyMemoryLimit`) }}
@@ -2520,9 +2524,13 @@ data:
               requests:
                 {{ if (isset .ObjectMeta.Annotations `sidecar.istio.io/proxyCPU`) -}}
                 cpu: "{{ index .ObjectMeta.Annotations `sidecar.istio.io/proxyCPU` }}"
+                {{- else }}
+                cpu: 60m
                 {{ end }}
                 {{ if (isset .ObjectMeta.Annotations `sidecar.istio.io/proxyMemory`) -}}
                 memory: "{{ index .ObjectMeta.Annotations `sidecar.istio.io/proxyMemory` }}"
+                {{- else }}
+                memory: 60Mi
                 {{ end }}
             {{- end }}
             {{- if or (isset .ObjectMeta.Annotations `sidecar.istio.io/proxyCPULimit`) (isset .ObjectMeta.Annotations `sidecar.istio.io/proxyMemoryLimit`) }}
@@ -3052,8 +3060,8 @@ spec:
             cpu: 2000m
             memory: 1024Mi
           requests:
-            cpu: 100m
-            memory: 128Mi
+            cpu: 10m
+            memory: 100Mi
         env:
         - name: JWT_POLICY
           value: third-party-jwt
@@ -3279,9 +3287,12 @@ spec:
         - name: CLUSTER_ID
           value: Kubernetes
         resources:
-          requests:
-            cpu: 500m
+          limits:
+            cpu: 1000m
             memory: 2048Mi
+          requests:
+            cpu: 10m
+            memory: 100Mi
         securityContext:
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: true
